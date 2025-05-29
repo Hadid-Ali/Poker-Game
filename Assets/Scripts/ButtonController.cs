@@ -36,7 +36,9 @@ public class ButtonController : MonoBehaviour
             return;
         }
 
-        dealerController.RpcRequestDealCards(playerName);
+        // Fire event to request the RPC from local player
+        PlayerController.OnOnLocalPlayerRequestedDeal(playerName);
+        //dealerController.RpcRequestDealCards(playerName);
     }
 
     private void SetInteractable(bool enabled)

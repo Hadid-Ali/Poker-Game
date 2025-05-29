@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Fusion;
 using TMPro;
@@ -11,6 +12,8 @@ public class PlayerController : NetworkBehaviour
 
     private DealerController _dealerController;
     private NetworkRunner _networkRunner;
+    
+    public static event Action<string> OnLocalPlayerRequestedDeal;
 
     public override void Spawned()
     {
@@ -26,6 +29,14 @@ public class PlayerController : NetworkBehaviour
         {
             Debug.LogError("DealerController not found in scene.");
         }
+        
+        // Subscribe to button trigger
+        OnLocalPlayerRequestedDeal += HandleDealRequested;
+    }
+    
+    private void HandleDealRequested(string _)
+    {
+        Show();
     }
     
     public override void Render()
@@ -55,11 +66,11 @@ public class PlayerController : NetworkBehaviour
     
     private void Show()
     {
-        if (_dealerController.IsPlaying)
-        {
-            _dealerController.ShowMessage("Dealer is already playing animation. Request ignored.");
-            return;
-        }
         _dealerController.RpcRequestDealCards(PlayerName);
+    }
+
+    public static void OnOnLocalPlayerRequestedDeal(string obj)
+    {
+        OnLocalPlayerRequestedDeal?.Invoke(obj);
     }
 }
